@@ -15,7 +15,7 @@ module.exports = (root, port) => {
     try {
       // let html = await fs.promises.readFile(filePath);
       const template = fs.readFileSync(filePath, 'utf-8');
-      const transport = config.transport;
+      const transport = config.transport === 'ws'? 'ws': 'http' ;
       const html = template
                     .replace('{{transport}}', transport)
                     .replace('{{apiUrl}}', config.urls[transport])
