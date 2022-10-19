@@ -3,7 +3,8 @@
 const http = require('node:http');
 const path = require('node:path');
 const fs = require('node:fs');
-const config =require('./config.js');
+const config = require('./config.js');
+const structure = require('./structure.js');
 
 module.exports = (root, port) => {
   http.createServer(async (req, res) => {
@@ -19,6 +20,7 @@ module.exports = (root, port) => {
       const html = template
                     .replace('{{transport}}', transport)
                     .replace('{{apiUrl}}', config.urls[transport])
+                    .replace('{{structure}}', JSON.stringify(structure))
 
       res.end(html);
     } catch (err) {

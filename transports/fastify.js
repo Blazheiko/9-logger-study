@@ -16,7 +16,7 @@ const config =require('../config.js');
 
 
 module.exports = (routing, port) => {
-// Declare a route
+
 const services = Object.keys(structure);
 for (const serviceName of services) {
     const service = structure[serviceName];
@@ -35,7 +35,7 @@ for (const serviceName of services) {
           })
     }
 }
-  // Run the server!
+  
   const start = async () => {
     try {
       await fastify.listen({ port: port })

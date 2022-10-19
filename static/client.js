@@ -59,25 +59,8 @@ transports.http =  (structure,apiUrl) => {
   return Promise.resolve(api);
 };
 
-const structure = {
-  user: {
-    create: ['record'],
-    read: ['id'],
-    update: ['id', 'record'],
-    delete: ['id'],
-    find: ['mask'],
-  },
-  country: {
-    read: ['id'],
-    delete: ['id'],
-    find: ['mask'],
-  },
-}
-
-
-
 const init = async () => {
-  window.api = await transports[window.transport](structure,window.apiUrl);
+  window.api = await transports[window.transport](JSON.parse(window.structure),window.apiUrl);
   const data = await window.api.user.read(1);
   console.dir({ data });
 }
