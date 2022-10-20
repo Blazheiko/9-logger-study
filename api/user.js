@@ -1,24 +1,34 @@
-({
-  read(id) {
-    return db('users').read(id, ['id', 'login']);
-  },
+'use strict';
 
-  async create({ login, password }) {
-    const passwordHash = await common.hash(password);
-    return db('users').create({ login, password: passwordHash });
-  },
+// const db = require('../db.js');
+// const user = db('user');
 
-  async update(id, { login, password }) {
-    const passwordHash = await common.hash(password);
-    return db('users').update(id, { login, password: passwordHash });
-  },
+module.exports = (db) => {
+    const user = db('users');
 
-  delete(id) {
-    return db('users').delete(id);
-  },
+    return ({
+      read(id) {
+        return user.read(id, ['id', 'login']);
+      },
+    
+      async create ({ login, password }) {
+        const passwordHash = await common.hash(password);
+        return user.create({ login, password: passwordHash });
+      },
+    
+      async update(id, { login, password }) {
+        const passwordHash = await common.hash(password);
+        return user.update(id, { login, password: passwordHash });
+      },
+    
+      delete(id) {
+        return user.delete(id);
+      },
+    
+      find(mask) {
+        const sql = 'SELECT login from users where login like $1';
+        return user.query(sql, [mask]);
+      }
+    })
 
-  find(mask) {
-    const sql = 'SELECT login from users where login like $1';
-    return db('users').query(sql, [mask]);
-  },
-});
+  }

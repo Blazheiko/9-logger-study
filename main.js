@@ -10,17 +10,17 @@ const transport = config.transports[config.transport]
 
 const server = require(transport);
 const staticServer = require('./static.js');
-const load = require('./load.js');
-const db = require('./db.js');
+// const load = require('./load.js');
+const db = require('./db.js')(config.db);
 const hash = require('./hash.js');
 const logger = require('./logger.js');
 
 
-const sandbox = {
-  console: Object.freeze(logger),
-  db: Object.freeze(db),
-  common: { hash },
-};
+// const sandbox = {
+//   console: Object.freeze(logger),
+//   db: Object.freeze(db),
+//   common: { hash },
+// };
 const apiPath = path.join(process.cwd(), './api');
 const routing = {};
 
@@ -30,8 +30,11 @@ const routing = {};
     if (!fileName.endsWith('.js')) continue;
     const filePath = path.join(apiPath, fileName);
     const serviceName = path.basename(fileName, '.js');
-    routing[serviceName] = await load(filePath, sandbox);
+    // console.log(`./api/${fileName}`)
+    // routing[serviceName] = require(`./api/${fileName}`)(db);
+    routing[serviceName] = require(filePath)(db);
   }
+  console.log(routing)
 
   staticServer('./static', config.staticPort);
   server(routing, config.apiPort);

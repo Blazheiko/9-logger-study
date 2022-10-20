@@ -44,7 +44,7 @@ const httpTransport = (serviceName,methodName,apiUrl) => (...args) =>  new Promi
     body: JSON.stringify( args ),
   }).then((res) => {
     const { status } = res;
-    console.log(res)
+    // console.log(res)
     if (status !== 200) {
       reject(new Error(`Status Code: ${status}`));
       return;
