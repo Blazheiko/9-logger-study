@@ -1,4 +1,4 @@
 'use strict';
 // const db = require('../db.js');
 
-module.exports =  (db) => db('city');
+module.exports =  (db,logger) => db('city');

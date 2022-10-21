@@ -13,7 +13,10 @@ const staticServer = require('./static.js');
 // const load = require('./load.js');
 const db = require('./db.js')(config.db);
 const hash = require('./hash.js');
-const logger = require('./logger.js');
+
+const loggerUrl = config.loggers[config.logger]
+const logger = require(loggerUrl);
+console =  Object.freeze(logger);
 
 
 // const sandbox = {
@@ -30,12 +33,10 @@ const routing = {};
     if (!fileName.endsWith('.js')) continue;
     const filePath = path.join(apiPath, fileName);
     const serviceName = path.basename(fileName, '.js');
-    // console.log(`./api/${fileName}`)
-    // routing[serviceName] = require(`./api/${fileName}`)(db);
-    routing[serviceName] = require(filePath)(db);
+    routing[serviceName] = require(filePath)(db,console);
   }
-  console.log(routing)
-
+  
   staticServer('./static', config.staticPort);
   server(routing, config.apiPort);
+  // console.log('start succuss')
 })();

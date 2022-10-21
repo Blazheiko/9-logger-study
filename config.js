@@ -1,11 +1,14 @@
 
 const apiPort = '8001';
 const staticPort = '3333';
+const transport =  'fastify';// http ||  ws || fastify
+const logger = 'native';
 
 module.exports = {
-    transport: 'fastify',// http ||  ws || fastify
+    transport: transport,
     apiPort: apiPort,
     staticPort: staticPort,
+    logger: logger,
     transports: {
         http: './transports/http.js',
         ws: './transports/ws.js',
@@ -14,6 +17,10 @@ module.exports = {
     urls: {
         http: `http://127.0.0.1:${apiPort}/`,
         ws: `ws://127.0.0.1:${apiPort}/ `
+    },
+    loggers:{
+        native: './loggers/logger.js',
+        pino: './loggers/pino-adapter.js'
     },
     db: {
         host: '127.0.0.1',

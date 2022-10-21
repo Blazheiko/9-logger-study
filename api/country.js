@@ -2,13 +2,13 @@
 // const db = require('../db.js');
 // const country = db('country');
 
-module.exports = (db) => {
+module.exports = (db,console) => {
 
   const country = db('country');
 
  return ({
     read(id) {
-      console.log({ db });
+      console.log(`country read ${id}`);
       return country.read(id);
     },
   

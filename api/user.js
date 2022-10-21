@@ -3,11 +3,12 @@
 // const db = require('../db.js');
 // const user = db('user');
 
-module.exports = (db) => {
+module.exports = (db,logger) => {
     const user = db('users');
 
     return ({
       read(id) {
+        logger.log(`user read ${id}`)
         return user.read(id, ['id', 'login']);
       },
     
