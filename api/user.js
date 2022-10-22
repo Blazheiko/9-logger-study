@@ -2,6 +2,7 @@
 
 // const db = require('../db.js');
 // const user = db('user');
+const hash = require('../hash.js');
 
 module.exports = (db,logger) => {
     const user = db('users');
@@ -13,12 +14,12 @@ module.exports = (db,logger) => {
       },
     
       async create ({ login, password }) {
-        const passwordHash = await common.hash(password);
+        const passwordHash = await hash(password);
         return user.create({ login, password: passwordHash });
       },
     
       async update(id, { login, password }) {
-        const passwordHash = await common.hash(password);
+        const passwordHash = await hash(password);
         return user.update(id, { login, password: passwordHash });
       },
     
