@@ -18,7 +18,7 @@ const hash = require('./hash.js');
 
 const loggerUrl = config.loggers[config.logger]
 const logger = require(loggerUrl);
-// console =  Object.freeze(logger);
+ console =  Object.freeze(logger);
 
 
 // const sandbox = {
