@@ -1,7 +1,7 @@
 
 const apiPort = '8001';
 const staticPort = '3333';
-const transport =  'fastify';// http ||  ws || fastify
+const transport =  'ws';// http ||  ws || fastify
 const logger = 'native';
 
 module.exports = {

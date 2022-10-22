@@ -14,13 +14,13 @@ module.exports = (root, port) => {
     }
     const filePath = path.join(root, url);
     try {
-      // let html = await fs.promises.readFile(filePath);
-      const template = fs.readFileSync(filePath, 'utf-8');
-      const transport = config.transport === 'ws'? 'ws': 'http' ;
-      const html = template
-                    .replace('{{transport}}', transport)
-                    .replace('{{apiUrl}}', config.urls[transport])
-                    .replace('{{structure}}', JSON.stringify(structure))
+      let html = await fs.promises.readFile(filePath);
+      // const template = fs.readFileSync(filePath, 'utf-8');
+      // const transport = config.transport === 'ws'? 'ws': 'http' ;
+      // const html = template
+      //               .replace('{{transport}}', transport)
+      //               .replace('{{apiUrl}}', config.urls[transport])
+      //               .replace('{{structure}}', JSON.stringify(structure))
 
       res.end(html);
     } catch (err) {

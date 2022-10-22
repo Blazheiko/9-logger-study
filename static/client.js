@@ -1,5 +1,9 @@
 'use strict';
 
+import config from './config.js';
+console.log(config)
+const structure = JSON.parse(config.structure);
+
 const creatorApi = (structure,apiUrl,transport) =>{
   const api = {};
   const services = Object.keys(structure);
@@ -60,7 +64,7 @@ transports.http =  (structure,apiUrl) => {
 };
 
 const init = async () => {
-  window.api = await transports[window.transport](JSON.parse(window.structure),window.apiUrl);
+  window.api = await transports[config.transport](structure,config.apiUrl);
   const data = await window.api.user.read(1);
   console.dir({ data });
 }

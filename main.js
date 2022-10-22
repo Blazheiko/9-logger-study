@@ -3,10 +3,12 @@
 
 const fsp = require('node:fs').promises;
 const path = require('node:path');
+
 const config = require('./config.js');
 const transport = config.transports[config.transport]
+const build = require('./build.js')
+build(config)
 
-// const server = require('./ws.js');
 
 const server = require(transport);
 const staticServer = require('./static.js');
@@ -16,7 +18,7 @@ const hash = require('./hash.js');
 
 const loggerUrl = config.loggers[config.logger]
 const logger = require(loggerUrl);
-console =  Object.freeze(logger);
+// console =  Object.freeze(logger);
 
 
 // const sandbox = {
@@ -35,8 +37,8 @@ const routing = {};
     const serviceName = path.basename(fileName, '.js');
     routing[serviceName] = require(filePath)(db,console);
   }
-  
+             
   staticServer('./static', config.staticPort);
   server(routing, config.apiPort);
-  // console.log('start succuss')
+  
 })();
