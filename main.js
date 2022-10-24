@@ -17,8 +17,10 @@ const db = require('./db.js')(config.db);
 const hash = require('./hash.js');
 
 const loggerUrl = config.loggers[config.logger]
-const logger = require(loggerUrl);
- console =  Object.freeze(logger);
+const loggerLib = require(loggerUrl);
+const logger = Object.freeze(loggerLib);
+
+//  console =  Object.freeze(logger);
 
 
 // const sandbox = {
@@ -35,10 +37,10 @@ const routing = {};
     if (!fileName.endsWith('.js')) continue;
     const filePath = path.join(apiPath, fileName);
     const serviceName = path.basename(fileName, '.js');
-    routing[serviceName] = require(filePath)(db,console);
+    routing[serviceName] = require(filePath)(db,Object.freeze(logger));
   }
              
-  staticServer('./static', config.staticPort);
-  server(routing, config.apiPort);
+  staticServer('./static', config.staticPort,logger);
+  server(routing, config.apiPort,logger);
   
 })();

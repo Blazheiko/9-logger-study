@@ -25,6 +25,7 @@ const wsTransport = (serviceName,methodName,apiUrl) => (...args) => new Promise(
   const packet = { name: serviceName, method: methodName, args };
   socket.send(JSON.stringify(packet));
   socket.onmessage = (event) => {
+    console.log(event)
     const data = JSON.parse(event.data);
     resolve(data);
   };

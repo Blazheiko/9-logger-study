@@ -2,7 +2,7 @@
 const apiPort = '8001';
 const staticPort = '3333';
 const transport =  'ws';// http ||  ws || fastify
-const logger = 'native';
+const logger = 'native';// native || pino
 
 module.exports = {
     transport: transport,

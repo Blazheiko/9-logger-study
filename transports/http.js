@@ -20,7 +20,7 @@ const receiveArgs = async (req) => {
   return JSON.parse(data);
 };
 
-module.exports = (routing, port) => {
+module.exports = (routing, port,logger) => {
   http.createServer(async (req, res) => {
 
     res.writeHead(200, config.headers);
@@ -35,10 +35,19 @@ module.exports = (routing, port) => {
     const handler = entity[method];
     if (!handler) return res.end('Not found');
     const args = await receiveArgs(req);
-    console.log(`${socket.remoteAddress} ${method} ${url}`);
-    const result = await handler(...args);
+    logger.log(`${socket.remoteAddress} ${method} ${url}`);
+    try{
+      const result = await handler(...args);
+      res.end(JSON.stringify(result));
+
+    }catch(err){
+      logger.eror(err)
+      res.statusCode(500);
+      res.end('Server error');
+    }
     
-    res.end(JSON.stringify(result.rows));
+    
+    
   
   }).listen(port);
 

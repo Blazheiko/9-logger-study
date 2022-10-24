@@ -3,31 +3,43 @@
 const http = require('node:http');
 const path = require('node:path');
 const fs = require('node:fs');
-const config = require('./config.js');
-const structure = require('./structure.js');
 
-module.exports = (root, port) => {
+
+
+const MIME_TYPES = {
+  html: 'text/html; charset=UTF-8',
+  json: 'application/json; charset=UTF-8',
+  js: 'application/javascript; charset=UTF-8',
+  css: 'text/css',
+  png: 'image/png',
+  ico: 'image/x-icon',
+  svg: 'image/svg+xml',
+};
+
+const HEADERS = {
+  'X-XSS-Protection': '1; mode=block',
+  'X-Content-Type-Options': 'nosniff',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubdomains; preload',
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+module.exports = (root, port,logger) => {
   http.createServer(async (req, res) => {
     const url = req.url === '/' ? '/index.html' : req.url;
-    if(req.url !== '/'){
-      res.setHeader('Content-type', 'text/javascript')  
-    }
     const filePath = path.join(root, url);
     try {
-      let html = await fs.promises.readFile(filePath);
-      // const template = fs.readFileSync(filePath, 'utf-8');
-      // const transport = config.transport === 'ws'? 'ws': 'http' ;
-      // const html = template
-      //               .replace('{{transport}}', transport)
-      //               .replace('{{apiUrl}}', config.urls[transport])
-      //               .replace('{{structure}}', JSON.stringify(structure))
-
-      res.end(html);
+      const data = await fs.promises.readFile(filePath);
+      const fileExt = path.extname(filePath).substring(1);
+      const mimeType = MIME_TYPES[fileExt] || MIME_TYPES.html;
+      res.writeHead(200, { ...HEADERS, 'Content-Type': mimeType });
+      res.end(data);
     } catch (err) {
       res.statusCode = 404;
       res.end('"File is not found"');
     }
   }).listen(port);
 
-  console.log(`Static on port ${port}`);
+  logger.log(`Static on port ${port}`);
 };

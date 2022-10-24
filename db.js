@@ -19,7 +19,7 @@ module.exports = (config) => {
   return (table) => ({
 
     query(sql, args) {
-      return pool.query(sql, args);
+      return pool.query(sql, args).rows;
     },
   
     read(id, fields = ['*']) {
@@ -41,7 +41,7 @@ module.exports = (config) => {
       const fields = '"' + keys.join('", "') + '"';
       const params = nums.join(', ');
       const sql = `INSERT INTO "${table}" (${fields}) VALUES (${params})`;
-      return pool.query(sql, data);
+      return pool.query(sql, data).rows;
     },
   
     async update(id, { ...record }) {
@@ -56,12 +56,12 @@ module.exports = (config) => {
       const delta = updates.join(', ');
       const sql = `UPDATE ${table} SET ${delta} WHERE id = $${++i}`;
       data.push(id);
-      return pool.query(sql, data);
+      return pool.query(sql, data).rows;
     },
   
     delete(id) {
       const sql = `DELETE FROM ${table} WHERE id = $1`;
-      return pool.query(sql, [id]);
+      return pool.query(sql, [id]).rows;
     },
   });
 };

@@ -1,4 +1,4 @@
-const fastify = require('fastify')({ logger: true });
+const fastify = require('fastify')({ logger: false});
 const cors = require('@fastify/cors');
 
 
@@ -15,7 +15,7 @@ const config =require('../config.js');
 
 
 
-module.exports = (routing, port) => {
+module.exports = (routing, port,logger) => {
 
 const services = Object.keys(structure);
 for (const serviceName of services) {
@@ -28,10 +28,19 @@ for (const serviceName of services) {
       
         fastify.post(url, async (request, reply) => {
             reply.header('Content-Type',config.headers['Content-Type'])
-            console.log( request.body )
+            logger.log( request.body )
+
+            try{
+              const result = await handler(...request.body);
+              return JSON.stringify(result.rows)
+        
+            }catch(err){
+              logger.eror(err)
+              reply.statusCode = 500
+              return 'Server error'
+            }
             
-            const result = await handler(...request.body);
-            return JSON.stringify(result.rows)
+           
           })
     }
 }
