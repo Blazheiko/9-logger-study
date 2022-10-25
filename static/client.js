@@ -1,8 +1,9 @@
 'use strict';
 
 import config from './config.js';
-console.log(config)
+// console.log(config)
 const structure = JSON.parse(config.structure);
+
 
 const creatorApi = (structure,apiUrl,transport) =>{
   const api = {};
@@ -21,18 +22,30 @@ const creatorApi = (structure,apiUrl,transport) =>{
 
 const transports = {};
 
-const wsTransport = (serviceName,methodName,apiUrl) => (...args) => new Promise((resolve) => {
-  const packet = { name: serviceName, method: methodName, args };
-  socket.send(JSON.stringify(packet));
-  socket.onmessage = (event) => {
-    console.log(event)
-    const data = JSON.parse(event.data);
-    resolve(data);
-  };
-});
+const storageResolves = {}
+let testIndex = 0;
+
+const wsTransport = (serviceName,methodName,apiUrl) => (...args) => new Promise((resolve) => {  
+    const index = testIndex++; 
+    const packet = { name: serviceName, method: methodName, index, args };
+    storageResolves[index] = resolve
+    socket.send(JSON.stringify(packet));
+  });
+  
 
 transports.ws = (structure,apiUrl) => {
   window.socket = new WebSocket(apiUrl);
+
+  socket.onmessage = (event) => { 
+    console.log(event)
+    const data = JSON.parse(event.data);  
+    const resolve = storageResolves[data.index]
+    if(resolve)resolve(data.result)
+    else console.error('resolve not found')
+    delete storageResolves[data.index]
+    // resolve(data.result);
+  };
+  
   const api = creatorApi(structure,apiUrl,wsTransport)
 
   return new Promise((resolve) => {
@@ -66,8 +79,18 @@ transports.http =  (structure,apiUrl) => {
 
 const init = async () => {
   window.api = await transports[config.transport](structure,config.apiUrl);
-  const data = await window.api.user.read(1);
-  console.dir({ data });
+  test()
+  // const data = await window.api.user.read(1);
+
+  // console.dir({ data });
+}
+const test = ()=> {
+  for(let i = 1; i < 5; i++){
+    setTimeout(async () => {
+      const data = await api.user.read(i);
+      console.dir({ data });
+    },5)
+  }
 }
 
 init()

@@ -10,7 +10,8 @@ module.exports = (routing, port,logger) => {
     const ip = req.socket.remoteAddress;
     connection.on('message', async (message) => {
       const obj = JSON.parse(message);
-      const { name, method, args = [] } = obj;
+      const {index, name, method, args = [] } = obj;
+      
       const entity = routing[name];
       if (!entity) return connection.send('"Not found"', { binary: false });
       const handler = entity[method];
@@ -20,7 +21,8 @@ module.exports = (routing, port,logger) => {
       logger.log(`${ip} ${name}.${method}(${parameters})`);
       try {
         const result = await handler(...args);
-        connection.send(JSON.stringify(result.rows), { binary: false });
+        const data = { index, result:result.rows }
+        connection.send(JSON.stringify(data), { binary: false });
       } catch (err) {
         logger.error(err);
         connection.send('"Server error"', { binary: false });
