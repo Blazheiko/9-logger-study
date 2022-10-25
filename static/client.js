@@ -5,7 +5,7 @@ import config from './config.js';
 const structure = JSON.parse(config.structure);
 
 
-const creatorApi = (structure,apiUrl,transport) =>{
+const scaffold = (structure,apiUrl,transport) =>{
   const api = {};
   const services = Object.keys(structure);
   for (const serviceName of services) {
@@ -46,7 +46,7 @@ transports.ws = (structure,apiUrl) => {
     // resolve(data.result);
   };
   
-  const api = creatorApi(structure,apiUrl,wsTransport)
+  const api = scaffold(structure,apiUrl,wsTransport)
 
   return new Promise((resolve) => {
     socket.addEventListener('open', () => resolve(api));
@@ -72,7 +72,7 @@ const httpTransport = (serviceName,methodName,apiUrl) => (...args) =>  new Promi
 });
 
 transports.http =  (structure,apiUrl) => {
-  const api = creatorApi(structure,apiUrl,httpTransport)
+  const api = scaffold(structure,apiUrl,httpTransport)
 
   return Promise.resolve(api);
 };
