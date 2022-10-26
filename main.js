@@ -13,15 +13,13 @@ build(config)
 const server = require(transport);
 const staticServer = require('./static.js');
 // const load = require('./load.js');
-const db = require('./db.js')(config.db);
-const hash = require('./hash.js');
+const dbLib = require('./db.js')(config.db);
+const db = Object.freeze(dbLib);
+
 
 const loggerUrl = config.loggers[config.logger]
 const loggerLib = require(loggerUrl);
 const logger = Object.freeze(loggerLib);
-
-//  console =  Object.freeze(logger);
-
 
 // const sandbox = {
 //   console: Object.freeze(logger),
